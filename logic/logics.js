@@ -1,5 +1,5 @@
 import promptSync from 'prompt-sync';
-import { verifyTitle } from './auxilier.js';
+import { filterDisponibleBooks, filterByAuthor, filterByTitle } from './auxilier.js';
 
 const prompt = promptSync()
 
@@ -50,7 +50,8 @@ export function listBooks(books){
     console.log("\nHow would you like to list the books?"   +
         "\n1- List All"                                     +
         "\n2- Search By Title"                              +
-        "\n3- Filter By Disponible Books"
+        "\n3- Filter By Disponible Books"                   +
+        "\n4- Search By Author"
     )
     let choice = parseInt(prompt("-> "));
 
@@ -60,19 +61,21 @@ export function listBooks(books){
             break;
         }
         case 2: {
-            console.log("\nTitle of the book: ");
+            console.log("\nWhat's the title of the book?");
             let bookName = prompt("-> ");
 
-            let correspondentBooks = verifyTitle(bookName, books)
-            console.log(correspondentBooks);
+            allBooks(filterByTitle(books, bookName));
             break;
         }
         case 3: {
-            let filteredBooks = books.filter(function(index){
-                return index.book.isDisponible;
-            })
-            allBooks(filteredBooks);
+            allBooks(filterDisponibleBooks(books));
             break;
+        }
+        case 4: {
+            console.log("\nWhat's the name of the author?");
+            let authorName = prompt("-> ").toLowerCase();
+
+            allBooks(filterByAuthor(books, authorName));
         }
     }
 }
@@ -94,7 +97,7 @@ export function editBooks(books=[]){
         "\n1- Title"                            +
         "\n2- Author"                           +
         "\n3- Publish Year"                     +
-        "\n4- Genre" +
+        "\n4- Genre"                            +
         "\n5- Disponibility\n"
     );
     let choice = parseInt(prompt("-> "));
